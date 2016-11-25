@@ -13,11 +13,21 @@ func Generate(w io.Writer, m map[string]Commits) {
 		}
 		writeString(w, fmt.Sprintf("####%s\r\n", head))
 		for _, commit := range commits {
-			writeString(w, fmt.Sprintf("[issue](%s)|[pull-request](%s) - %s\r\n\r\n",
-				commit.IssueURL,
-				commit.PrURL,
-				commit.ShortMessage,
-			))
+			var buffer string
+			if commit.IssueURL == "" {
+				buffer += "[issue]"
+			} else {
+				buffer += fmt.Sprintf("[issue](%s)", commit.IssueURL)
+			}
+			buffer += "|"
+			if commit.PrURL == "" {
+				buffer += "[pull-request]"
+			} else {
+				buffer += fmt.Sprintf("[pull-request](%s)", commit.PrURL)
+			}
+			buffer += fmt.Sprintf(" - %s\r\n\r\n", commit.ShortMessage)
+
+			writeString(w, buffer)
 		}
 	}
 }
