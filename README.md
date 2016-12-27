@@ -21,10 +21,6 @@ go get github.com/hsinhoyeh/go-changelog
 
 ##### Example
 ```
-func matchAllChanges(_ changelog.Commit) bool {
-        return true
-}
-
 func main() {
         const (
                 token = "b29cb7fdfb7a065f19e89b72731758e95be9c2b2"
@@ -35,9 +31,7 @@ func main() {
                 ),
         )
         client := github.NewClient(tc)
-
         cl := changelog.NewChangeLog(client)
-
         commits, err := cl.Get("hsinhoyeh", "go-changelog", "master", "base")
         if err != nil {
                 log.Fatal(err)
