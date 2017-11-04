@@ -1,6 +1,7 @@
 package changelog
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -70,10 +71,12 @@ func (c *ChangeLog) Get(owner, repo, base, compare string) (Commits, error) {
 
 		// parse pull request number from (#xxx)
 		commitMessage := *remoteCommit.Commit.Message
-		leftParenthesis := strings.Index(commitMessage, "(")
-		rightParenthesis := strings.Index(commitMessage, ")")
-		if leftParenthesis != -1 && rightParenthesis != -1 {
-			prNum, _ := strconv.Atoi(commitMessage[leftParenthesis+2 : /*skip ( and #*/ rightParenthesis])
+		r, _ := regexp.Compile("(#[0-9]+)")
+		if r.MatchString(commitMessage) {
+			// skip #
+			prStr := r.FindString(commitMessage)
+			prStr = prStr[1:]
+			prNum, _ := strconv.Atoi(prStr)
 
 			// get pull reqeust content
 			// TODO: use batch api
